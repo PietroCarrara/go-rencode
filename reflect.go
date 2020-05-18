@@ -44,6 +44,12 @@ func isCompatibleSlice(src, dest reflect.Type) bool {
 }
 
 func convertAssign(src, dest interface{}) error {
+
+	// Makes no sense trying to assign a nil value
+	if src == nil {
+		return nil
+	}
+
 	srcType := reflect.TypeOf(src)
 	srcVal := reflect.ValueOf(src)
 	destType := reflect.TypeOf(dest)
@@ -97,6 +103,7 @@ func convertAssign(src, dest interface{}) error {
 		destVal.Set(srcVal.Convert(stringType))
 		return nil
 	} else if isInt(srcKind) && isFloat(destKind) {
+		// Special case when the source is an int and the destination is a float
 		destVal.SetFloat(srcVal.Convert(destType).Float())
 		return nil
 	}
